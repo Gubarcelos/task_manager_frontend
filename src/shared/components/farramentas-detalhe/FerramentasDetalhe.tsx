@@ -77,7 +77,7 @@ export const FerramentasDetalhe: React.FC<IFerramentasDetalheProps> = ({
                     color="primary"
                     disableElevation
                     variant="outlined"
-                    onClick={onClickDelete}
+                    onClick={onClickBack}
                     endIcon={<Icon>arrow_back</Icon>}
                 >Voltar
                 </Button>

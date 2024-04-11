@@ -1,5 +1,5 @@
 
-import { AppBar, Box, Icon, IconButton, Toolbar, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Icon, IconButton, Toolbar, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useDrawerContext } from "../contexts";
 import { ReactNode } from "react";
 

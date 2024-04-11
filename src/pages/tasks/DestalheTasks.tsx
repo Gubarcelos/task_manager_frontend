@@ -80,7 +80,7 @@ export const DetalheTasks: React.FC = () => {
             startDate: startDate,
             finishDate: finishDate,
             status: status,
-            user: user,
+            user: userId ?? '',
         };
         console.log(data);
 

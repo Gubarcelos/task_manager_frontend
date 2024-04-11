@@ -11,13 +11,13 @@ const login = async (payload: ILogin): Promise<void | Error> => {
     try {
         const response = await api.post(`/auth/login`, payload);
         console.log(response.data);
-        console.log(response.headers.getAuthorization);
+        console.log(response.headers);
         console.log(response.status);
-        console.log(response);
+        console.log(response.headers.authorization);
 
         if (response.status === 204 && response.headers.getAuthorization) {
             const cookies = new Cookies();
-            cookies.set('token', response.headers.authorization, { path: '/', maxAge: 3600 }); // Defina o tempo de expiração conforme necessário
+            cookies.set('token', response.headers.authorization, { path: '/', maxAge: 3600 });
             return;
         }
         return new Error('Erro ao fazer login');

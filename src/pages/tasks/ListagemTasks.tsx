@@ -96,7 +96,7 @@ export const ListagemTasks: React.FC = () => {
                                     </IconButton>
                                     </TableCell>
                                     <TableCell>
-                                    <IconButton size="small" onClick={()=> handleNav(`/tasks/view/${row._id}`)}>
+                                    <IconButton size="small" onClick={()=> handleNav(`/tasks/view/${row._id}?userId=${row.user}`)}>
                                         <Icon>edit</Icon>
                                     </IconButton>
                                     </TableCell>

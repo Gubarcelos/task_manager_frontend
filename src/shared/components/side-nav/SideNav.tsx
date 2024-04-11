@@ -60,21 +60,11 @@ export const SideNav: React.FC<Props> = ({ children }) => {
                 </Box>
                 <Divider>
                 <List component="nav">
-                    {/* <LinkItemList
-                        icon='home'
-                        to='/home'
-                        label='Home'
-                    /> */}
                     <LinkItemList
                         icon='checklist'
                         to='/tasks'
                         label='Tasks'
                     />
-                    {/* <LinkItemList
-                        icon='star'
-                        to='/user'
-                        label='Tasks'
-                    /> */}
                 </List>
                 </Divider>
             </Drawer>

@@ -4,7 +4,6 @@ import { ThemeProvider } from "@emotion/react";
 import { lightTheme } from "./shared/themes";
 import { SideNav } from "./shared/components";
 import { AppDrawerProvider } from "./shared/contexts";
-import { AppBar, Toolbar, Typography } from "@mui/material";
 export const App = () => {
   return (
     <AppDrawerProvider>

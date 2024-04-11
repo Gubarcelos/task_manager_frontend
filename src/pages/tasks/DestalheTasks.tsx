@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { LayoutBasePage } from "../../shared/layout";
 import { FerramentasDetalhe } from "../../shared/components";
 import { TaskService } from "../../shared/services/api/Tasks/TasksServices";
 
 // Styled Components
 import styled from "styled-components";
+import { useDrawerContext } from "../../shared/contexts";
 
 const FormContainer = styled.form`
     display: flex;
@@ -29,10 +30,13 @@ const StyledInput = styled.input`
 
 export const DetalheTasks: React.FC = () => {
     const { id = 'nova' } = useParams<'id'>();
-    const { userId } = useParams<'userId'>();
+    
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const userId = searchParams.get('userId');
 
+    console.log('o id é '+userId);
 
-    const [isLoading, setIsLoading] = useState(false);
     const [nome, setNome] = useState('');
     const [tipoTarefa, setTipoTarefa] = useState('');
     const [startDate, setStartDate] = useState('');
@@ -49,7 +53,6 @@ export const DetalheTasks: React.FC = () => {
     useEffect(() => {
         if (id !== 'nova') {
             TaskService.getById(id).then((result) => {
-                setIsLoading(false);
                 if (result instanceof Error) {
                     alert(result.message);
                     handleNav('/tasks');
@@ -82,7 +85,6 @@ export const DetalheTasks: React.FC = () => {
         console.log(data);
 
         if (id === 'nova') {
-            console.log('Salva')
             TaskService.create(data).then((result) => {
                 if (result instanceof Error) {
                     alert(result.message);
@@ -92,7 +94,6 @@ export const DetalheTasks: React.FC = () => {
                 }
             });
         } else {
-            console.log("atualisa")
             TaskService.update(id, data).then((result) => {
                 if (result instanceof Error) {
                     alert(result.message);
@@ -114,15 +115,13 @@ export const DetalheTasks: React.FC = () => {
             }
         });
     };
-
     return (
         <LayoutBasePage
             titulo={id === 'nova' ? 'Nova Tarefa' : nome}
             barraDeFerramenta={
                 <FerramentasDetalhe
-                    showButtonUpdate={true}
+                    showButtonUpdate={false}
                     showButtonDelete={id !== 'nova'}
-                    onClickUpdate={() => { }}
                     onClickNew={handleSave}
                     onClickDelete={() => handleDelete(id)}
                     onClickBack={() => handleNav(`/tasks`)}
@@ -161,9 +160,10 @@ export const DetalheTasks: React.FC = () => {
                     onChange={(e) => setStatus(e.target.value)}
                 />
                 <StyledInput
+                    hidden
                     type="text"
                     placeholder="Usuário"
-                    value={userId}
+                    value={userId ?? ''}
                     disabled
                 />
             </FormContainer>

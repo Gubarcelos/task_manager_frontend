@@ -4,9 +4,33 @@ import { LayoutBasePage } from "../../shared/layout";
 import { FerramentasDetalhe } from "../../shared/components";
 import { TaskService } from "../../shared/services/api/Tasks/TasksServices";
 
-export const DetalheTasks : React.FC = () => { 
+// Styled Components
+import styled from "styled-components";
 
-    const { id = 'nova' }  = useParams<'id'>();
+const FormContainer = styled.form`
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Agora o formulário ocupará toda a largura disponível */
+    margin: 0; /* Removendo a margem automática */
+`;
+
+const StyledInput = styled.input`
+  margin-bottom: 10px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+
+  &:focus {
+    border-color: #007bff; /* Mudança de cor ao focar */
+  }
+`;
+
+export const DetalheTasks: React.FC = () => {
+    const { id = 'nova' } = useParams<'id'>();
+    const { userId } = useParams<'userId'>();
+
 
     const [isLoading, setIsLoading] = useState(false);
     const [nome, setNome] = useState('');
@@ -16,19 +40,24 @@ export const DetalheTasks : React.FC = () => {
     const [status, setStatus] = useState('');
     const [user, setUser] = useState('');
 
-    useEffect(()=> {
-        if(id !== 'nova') {
-            TaskService.getById(id)
-            .then((result)=> {
-                setIsLoading(false)
-                if(result instanceof Error) {
+    const formatDate = (dateString: string | number | Date) => {
+        const date = new Date(dateString);
+        const formattedDate = date.toISOString().slice(0, 16); 
+        return formattedDate;
+      };
+
+    useEffect(() => {
+        if (id !== 'nova') {
+            TaskService.getById(id).then((result) => {
+                setIsLoading(false);
+                if (result instanceof Error) {
                     alert(result.message);
                     handleNav('/tasks');
                 } else {
                     setNome(result.name);
                     setTipoTarefa(result.type);
-                    setStartDate(result.startDate);
-                    setFinishDate(result.finishDate);
+                    setStartDate(formatDate(result.startDate));
+                    setFinishDate(formatDate(result.finishDate));
                     setStatus(result.status);
                     setUser(result.user);
                 }
@@ -37,9 +66,9 @@ export const DetalheTasks : React.FC = () => {
     }, [id]);
 
     const navigate = useNavigate();
-    const handleNav = (path : string) => {
+    const handleNav = (path: string) => {
         navigate(path);
-    }
+    };
 
     const handleSave = () => {
         const data = {
@@ -48,12 +77,13 @@ export const DetalheTasks : React.FC = () => {
             startDate: startDate,
             finishDate: finishDate,
             status: status,
-            user: user
+            user: user,
         };
+        console.log(data);
 
         if (id === 'nova') {
-            TaskService.create(data)
-            .then((result) => {
+            console.log('Salva')
+            TaskService.create(data).then((result) => {
                 if (result instanceof Error) {
                     alert(result.message);
                 } else {
@@ -62,8 +92,8 @@ export const DetalheTasks : React.FC = () => {
                 }
             });
         } else {
-            TaskService.update(id, data)
-            .then((result) => {
+            console.log("atualisa")
+            TaskService.update(id, data).then((result) => {
                 if (result instanceof Error) {
                     alert(result.message);
                 } else {
@@ -74,10 +104,9 @@ export const DetalheTasks : React.FC = () => {
         }
     };
 
-    const handleDelete = (id : string) => {
-        TaskService.deletebyId(id)
-        .then((result) => {
-            if(result instanceof Error) {
+    const handleDelete = (id: string) => {
+        TaskService.deletebyId(id).then((result) => {
+            if (result instanceof Error) {
                 alert(result.message);
             } else {
                 alert('Registro apagado');
@@ -87,59 +116,57 @@ export const DetalheTasks : React.FC = () => {
     };
 
     return (
-        <LayoutBasePage 
-        titulo={id === 'nova' ? 'Nova Tarefa' : nome}
-        barraDeFerramenta ={
-            <FerramentasDetalhe
-            showButtonUpdate = {true}
-            showButtonDelete = {id !== 'nova'}
-
-            onClickUpdate={() => {}}
-            onClickNew={handleSave}
-            onClickDelete={()=>handleDelete(id)}
-            onClickBack={()=> handleNav(`/tasks`)}
-            />
-        }
+        <LayoutBasePage
+            titulo={id === 'nova' ? 'Nova Tarefa' : nome}
+            barraDeFerramenta={
+                <FerramentasDetalhe
+                    showButtonUpdate={true}
+                    showButtonDelete={id !== 'nova'}
+                    onClickUpdate={() => { }}
+                    onClickNew={handleSave}
+                    onClickDelete={() => handleDelete(id)}
+                    onClickBack={() => handleNav(`/tasks`)}
+                />
+            }
         >
-            {/* Formulário */}
-            <form>
-                <input 
+            <FormContainer>
+                <StyledInput
                     type="text"
                     placeholder="Tipo da Tarefa"
                     value={tipoTarefa}
                     onChange={(e) => setTipoTarefa(e.target.value)}
                 />
-                <input 
+                <StyledInput
                     type="text"
                     placeholder="Nome da Tarefa"
                     value={nome}
                     onChange={(e) => setNome(e.target.value)}
                 />
-                <input 
-                    type="date"
+                <StyledInput
+                    type="datetime-local"
                     placeholder="Data de Início"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                 />
-                <input 
-                    type="date"
+                <StyledInput
+                    type="datetime-local"
                     placeholder="Data de Término"
                     value={finishDate}
                     onChange={(e) => setFinishDate(e.target.value)}
                 />
-                <input 
+                <StyledInput
                     type="text"
                     placeholder="Status"
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
                 />
-                <input 
+                <StyledInput
                     type="text"
                     placeholder="Usuário"
-                    value={user}
-                    onChange={(e) => setUser(e.target.value)}
+                    value={userId}
+                    disabled
                 />
-            </form>
+            </FormContainer>
         </LayoutBasePage>
     );
 };

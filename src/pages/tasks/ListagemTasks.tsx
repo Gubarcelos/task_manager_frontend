@@ -18,7 +18,6 @@ export const ListagemTasks: React.FC = () => {
                     alert(result.message)
                 }
                 else {
-                    // Converter e formatar as datas
                     const formattedRows = result.map(row => ({
                         ...row,
                         startDate: formatarData(row.startDate),
@@ -41,7 +40,6 @@ export const ListagemTasks: React.FC = () => {
 
     const handleDelete = (id : string) => {
         console.log("o ida é"+ id)
-        // if(confirm('Realmente quer apagar a tarefa ?')) {
             TaskService.deletebyId(id)
             .then((result) => {
                 if(result instanceof Error) {
@@ -55,7 +53,6 @@ export const ListagemTasks: React.FC = () => {
                     alert('Resgistro apagado')
                 }
             })
-        // }
     }
     const navigate = useNavigate();
     const handleNav = (path : string) => {
@@ -68,7 +65,7 @@ export const ListagemTasks: React.FC = () => {
             barraDeFerramenta={
                 (
             <BarraFerramentas
-            buttonClick={()=> handleNav('/tasks/new')}
+            buttonClick={()=> handleNav('/tasks/new?userId=6616c8ed1d4754c9357c4da7')}
             />)}
         >
             <TableContainer>

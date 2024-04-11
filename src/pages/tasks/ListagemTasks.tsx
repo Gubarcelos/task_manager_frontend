@@ -58,14 +58,17 @@ export const ListagemTasks: React.FC = () => {
         // }
     }
     const navigate = useNavigate();
-    const handleNav = (id : string) => {
+    const handleNav = (path : string) => {
         console.log("oi")
-        navigate('/home');
+        navigate(path);
     }
     return (
         <LayoutBasePage
             titulo="Lista de Tarefas"
-            barraDeFerramenta={(<BarraFerramentas
+            barraDeFerramenta={
+                (
+            <BarraFerramentas
+            buttonClick={()=> handleNav('/tasks/new')}
             />)}
         >
             <TableContainer>
@@ -96,7 +99,7 @@ export const ListagemTasks: React.FC = () => {
                                     </IconButton>
                                     </TableCell>
                                     <TableCell>
-                                    <IconButton size="small" onClick={()=> handleNav(row._id)}>
+                                    <IconButton size="small" onClick={()=> handleNav(`/tasks/view/${row._id}`)}>
                                         <Icon>edit</Icon>
                                     </IconButton>
                                     </TableCell>

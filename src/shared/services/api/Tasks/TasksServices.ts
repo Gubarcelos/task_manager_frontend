@@ -51,7 +51,7 @@ const create = async (payload : Omit<ITask, '_id'>) : Promise<ITask | Error> => 
     }
 }
 
-const update = async (_id : string, payload : ITask) : Promise<any> => {
+const update = async (_id : string, payload : any) : Promise<any> => {
     try {
         const {data} = await api.post<ITask>(`/tasks/${_id}`,payload);
         if(data) {

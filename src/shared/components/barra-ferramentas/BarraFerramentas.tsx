@@ -29,6 +29,7 @@ export const BarraFerramentas: React.FC<IBarraDeFerramentasProps> = ({
                     color="primary"
                     disableElevation
                     variant="contained"
+                    onClick={buttonClick}
                     endIcon={<Icon>add</Icon>}
                 >{newButtonText}
                 </Button>

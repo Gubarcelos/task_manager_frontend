@@ -1,7 +1,9 @@
-import { Drawer, List, ListItemButton, ListItemText, Icon, ListItemIcon, useMediaQuery, Box, useTheme } from "@mui/material";
+import { Drawer, List, ListItemButton, ListItemText, Icon, ListItemIcon, useMediaQuery, Box, useTheme, Avatar, Divider } from "@mui/material";
 
 import { useDrawerContext } from "../../contexts";
 import { useMatch, useNavigate, useResolvedPath } from "react-router-dom";
+
+const logo = require('../../../assets/logo-cobasi-512.png');
 
 type Props = {
     children?: React.ReactNode
@@ -51,23 +53,30 @@ export const SideNav: React.FC<Props> = ({ children }) => {
                     }
                 }}
             >
+                <Box width="100%" height={theme.spacing(12)} display="flex" justifyContent="center">
+                    <Avatar
+                        sx={{height: theme.spacing(12), width: theme.spacing(12) }}
+                        src={logo}/>
+                </Box>
+                <Divider>
                 <List component="nav">
-                    <LinkItemList
+                    {/* <LinkItemList
                         icon='home'
                         to='/home'
                         label='Home'
-                    />
+                    /> */}
                     <LinkItemList
                         icon='checklist'
                         to='/tasks'
                         label='Tasks'
                     />
-                    <LinkItemList
+                    {/* <LinkItemList
                         icon='star'
                         to='/user'
                         label='Tasks'
-                    />
+                    /> */}
                 </List>
+                </Divider>
             </Drawer>
             <Box
                 component="main"

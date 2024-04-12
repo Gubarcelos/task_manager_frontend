@@ -10,12 +10,7 @@ export interface ILogin {
 const login = async (payload: ILogin): Promise<void | Error> => {
     try {
         const response = await api.post(`/auth/login`, payload);
-        console.log(response.data);
-        console.log(response.headers);
-        console.log(response.status);
-        console.log(response.headers.authorization);
-
-        if (response.status === 204 && response.headers.getAuthorization) {
+        if (response.status === 204 && response.headers.authorization) {
             const cookies = new Cookies();
             cookies.set('token', response.headers.authorization, { path: '/', maxAge: 3600 });
             return;

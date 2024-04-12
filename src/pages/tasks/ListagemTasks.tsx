@@ -4,29 +4,66 @@ import { LayoutBasePage } from "../../shared/layout";
 import { useEffect, useState } from "react";
 import { ITask, TaskService } from "../../shared/services/api/Tasks/TasksServices";
 import { Icon, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import Cookies from "universal-cookie";
 
 export const ListagemTasks: React.FC = () => {
 
-
     const [rows, setRows] = useState<ITask[]>([]);
+    const [userId, setUserId] = useState<string>('');
+    const navigate = useNavigate();
+    const cookies = new Cookies();
 
 
     useEffect(() => {
-        TaskService.getUserTasks('6616c8ed1d4754c9357c4da7')
-            .then((result) => {
-                if (result instanceof Error) {
-                    alert(result.message)
-                }
-                else {
-                    const formattedRows = result.map(row => ({
-                        ...row,
-                        startDate: formatarData(row.startDate),
-                        finishDate: formatarData(row.finishDate)
-                    }));
-                    setRows(formattedRows);
-                }
-            });
+        const token = cookies.get('token');
+        if(!token){
+            redirectToLogin();
+            return;
+        }
+        const decodedToken = decodeToken(token);
+        console.log(decodedToken || isTokenExpired(decodedToken));
+        if (!decodedToken) {
+          redirectToLogin();
+          return;
+        }
+        
+        const { userId } = decodedToken;
+        setUserId(userId);
+        TaskService.getUserTasks(userId)
+        .then((result) => {
+            if (result instanceof Error) {
+                alert(result.message)
+            }
+            else {
+                const formattedRows = result.map(row => ({
+                    ...row,
+                    startDate: formatarData(row.startDate),
+                    finishDate: formatarData(row.finishDate)
+                }));
+                setRows(formattedRows);
+            }
+        });
     }, []);
+
+    const decodeToken = (token: string) => {
+        try {
+            const decodedPayload = JSON.parse(atob(token.split('.')[1]));
+            return decodedPayload;
+        } catch (error) {
+          console.error('Erro ao decodificar o token:', error);
+          return null;
+        }
+      };
+
+      const isTokenExpired = (decodedToken: { exp: number }) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        return decodedToken.exp < currentTime;
+      };
+
+    const redirectToLogin = () => {
+        navigate('/login');
+      };
+
 
     const formatarData = (data: string) => {
         const dataObj = new Date(data);
@@ -39,7 +76,6 @@ export const ListagemTasks: React.FC = () => {
     };
 
     const handleDelete = (id : string) => {
-        console.log("o ida é"+ id)
             TaskService.deletebyId(id)
             .then((result) => {
                 if(result instanceof Error) {
@@ -54,7 +90,6 @@ export const ListagemTasks: React.FC = () => {
                 }
             })
     }
-    const navigate = useNavigate();
     const handleNav = (path : string) => {
         console.log("oi")
         navigate(path);
@@ -65,7 +100,7 @@ export const ListagemTasks: React.FC = () => {
             barraDeFerramenta={
                 (
             <BarraFerramentas
-            buttonClick={()=> handleNav('/tasks/new?userId=6616c8ed1d4754c9357c4da7')}
+            buttonClick={()=> handleNav(`/tasks/new?userId=${userId}`)}
             />)}
         >
             <TableContainer>

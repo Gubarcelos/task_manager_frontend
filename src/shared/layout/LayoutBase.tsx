@@ -26,7 +26,18 @@ export const LayoutBasePage: React.FC<ILayoutBase> = ({ children, titulo, barraD
                         <Icon>menu</Icon>
                     </IconButton>
                 )}
-                <Typography  overflow="hidden" textOverflow="ellipsis" whiteSpace={"nowrap"} variant={smDown? "h5" : mdDown ? "h4" : "h3"}>
+                <Typography
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                    whiteSpace={"nowrap"}
+                    variant={smDown ? "h5" : mdDown ? "h4" : "h3"}
+                    sx={{
+                        textTransform: 'uppercase',
+                        fontSize: '3rem', 
+                        color: theme.palette.text.secondary, 
+                        textAlign: 'center'
+                    }}
+                >
                     {titulo}
                 </Typography>
 

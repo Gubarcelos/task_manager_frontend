@@ -5,7 +5,7 @@ import { lightTheme } from "./shared/themes";
 import { SideNav } from "./shared/components";
 import { AppDrawerProvider } from "./shared/contexts";
 import { ThemeProvider } from "@mui/material";
-import { SignIn } from "./pages";
+import { SignIn, SignUp } from "./pages";
 export const App = () => {
   
   return (
@@ -14,6 +14,7 @@ export const App = () => {
         <BrowserRouter>
         <Routes>
             <Route path="/login" element={<SignIn />} />
+            <Route path="/logon" element={<SignUp/>} />
             <Route path="/*" element={<SideNav><AppRoutes /></SideNav>} />
           </Routes>
         </BrowserRouter>

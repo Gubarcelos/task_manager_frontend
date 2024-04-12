@@ -7,12 +7,13 @@ import { TaskService } from "../../shared/services/api/Tasks/TasksServices";
 // Styled Components
 import styled from "styled-components";
 import { useDrawerContext } from "../../shared/contexts";
+import Cookies from "universal-cookie";
 
 const FormContainer = styled.form`
     display: flex;
     flex-direction: column;
-    width: 100%; /* Agora o formulário ocupará toda a largura disponível */
-    margin: 0; /* Removendo a margem automática */
+    width: 100%;
+    margin: 0;
 `;
 
 const StyledInput = styled.input`
@@ -24,33 +25,60 @@ const StyledInput = styled.input`
   outline: none;
 
   &:focus {
-    border-color: #007bff; /* Mudança de cor ao focar */
+    border-color: #007bff;
+  }
+`;
+
+const StyledSelect = styled.select`
+  margin-bottom: 10px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+
+  &:focus {
+    border-color: #007bff;
   }
 `;
 
 export const DetalheTasks: React.FC = () => {
     const { id = 'nova' } = useParams<'id'>();
-    
+
+    const cookies = new Cookies();
+
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const userId = searchParams.get('userId');
 
-    console.log('o id é '+userId);
 
     const [nome, setNome] = useState('');
     const [tipoTarefa, setTipoTarefa] = useState('');
     const [startDate, setStartDate] = useState('');
     const [finishDate, setFinishDate] = useState('');
-    const [status, setStatus] = useState('');
+    const [status, setStatus] = useState<string>('pending');
     const [user, setUser] = useState('');
+
+    const statusOptions = ['pending', 'in-progress', 'completed', 'expired'];
+
 
     const formatDate = (dateString: string | number | Date) => {
         const date = new Date(dateString);
-        const formattedDate = date.toISOString().slice(0, 16); 
+        const formattedDate = date.toISOString().slice(0, 16);
         return formattedDate;
-      };
+    };
 
     useEffect(() => {
+        const token = cookies.get('token');
+        if (!token) {
+            handleNav('/login');
+            return;
+        }
+        const decodedToken = decodeToken(token);
+        if (!decodedToken) {
+            handleNav('/login');
+            return;
+        }
         if (id !== 'nova') {
             TaskService.getById(id).then((result) => {
                 if (result instanceof Error) {
@@ -115,6 +143,16 @@ export const DetalheTasks: React.FC = () => {
             }
         });
     };
+
+    const decodeToken = (token: string) => {
+        try {
+            const decodedPayload = JSON.parse(atob(token.split('.')[1]));
+            return decodedPayload;
+        } catch (error) {
+            console.error('Erro ao decodificar o token:', error);
+            return null;
+        }
+    };
     return (
         <LayoutBasePage
             titulo={id === 'nova' ? 'Nova Tarefa' : nome}
@@ -153,12 +191,16 @@ export const DetalheTasks: React.FC = () => {
                     value={finishDate}
                     onChange={(e) => setFinishDate(e.target.value)}
                 />
-                <StyledInput
-                    type="text"
-                    placeholder="Status"
+                <StyledSelect
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
-                />
+                >
+                    {statusOptions.map(option => (
+                        <option key={option} value={option}>
+                            {option}
+                        </option>
+                    ))}
+                </StyledSelect>
                 <StyledInput
                     hidden
                     type="text"

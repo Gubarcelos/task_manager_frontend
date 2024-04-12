@@ -28,7 +28,6 @@ function Copyright(props: any) {
   );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export const SignIn : React.FC = () => {
@@ -116,7 +115,7 @@ export const SignIn : React.FC = () => {
             </Button>
             <Grid container>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/logon" variant="body2">
                   {"Cadastro!"}
                 </Link>
               </Grid>

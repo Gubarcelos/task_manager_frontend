@@ -3,12 +3,16 @@ import { BarraFerramentas } from "../../shared/components";
 import { LayoutBasePage } from "../../shared/layout";
 import { useEffect, useState } from "react";
 import { ITask, TaskService } from "../../shared/services/api/Tasks/TasksServices";
-import { Icon, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Box, Icon, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import Cookies from "universal-cookie";
 
 export const ListagemTasks: React.FC = () => {
 
     const [rows, setRows] = useState<ITask[]>([]);
+    const [page, setPage] = useState<number>(1);
+    const [pageSize, setPageSize] = useState<number>(150); 
+    const [totalPages, setTotalPages] = useState<number>(0); 
+    const [totalCount, setTotalCount] = useState<number>(0);
     const [userId, setUserId] = useState<string>('');
     const navigate = useNavigate();
     const cookies = new Cookies();
@@ -26,24 +30,30 @@ export const ListagemTasks: React.FC = () => {
           redirectToLogin();
           return;
         }
-        
         const { userId } = decodedToken;
         setUserId(userId);
-        TaskService.getUserTasks(userId)
+        fetchTasks(userId, page, pageSize);
+    }, [page, pageSize]);
+
+    const fetchTasks = (userId: string, currentPage: number, size: number) => {
+        TaskService.getUserTasks(userId, currentPage, size)
         .then((result) => {
             if (result instanceof Error) {
-                alert(result.message)
-            }
-            else {
-                const formattedRows = result.map(row => ({
+                alert(result.message);
+            } else {
+                const formattedRows = result.tasks.map(row => ({
                     ...row,
                     startDate: formatarData(row.startDate),
                     finishDate: formatarData(row.finishDate)
                 }));
                 setRows(formattedRows);
+                setTotalCount(result.totalCount);
+                const totalPages = Math.ceil(totalCount / pageSize);
+                setTotalPages(totalPages);
             }
         });
-    }, []);
+    };
+
 
     const decodeToken = (token: string) => {
         try {
@@ -94,6 +104,9 @@ export const ListagemTasks: React.FC = () => {
         console.log("oi")
         navigate(path);
     }
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage);
+    }
     return (
         <LayoutBasePage
             titulo="Lista de Tarefas"
@@ -140,6 +153,13 @@ export const ListagemTasks: React.FC = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <Box display="flex" justifyContent="center" marginTop={2}>
+                {Array.from({ length: totalPages }, (_, index) => (
+                    <IconButton key={index} onClick={() => handlePageChange(index + 1)}>
+                        {index + 1}
+                    </IconButton>
+                ))}
+            </Box>
         </LayoutBasePage>
     );
 }

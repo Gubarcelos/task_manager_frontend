@@ -38,8 +38,8 @@ const LinkItemList: React.FC<IListItemLinkProps> = ({ icon, label, to }) => {
 
 export const SideNav: React.FC<Props> = ({ children }) => {
     const theme = useTheme();
-    const smDown = useMediaQuery(theme.breakpoints.down('sm'));
-    const { isDrawerOpen } = useDrawerContext();
+    const mdDown = useMediaQuery(theme.breakpoints.down('md'));
+    const { isDrawerOpen, closeDrawer } = useDrawerContext();
     const cookies = new Cookies();
 
     const navigate = useNavigate();
@@ -53,19 +53,20 @@ export const SideNav: React.FC<Props> = ({ children }) => {
         <>
             <Drawer
                 open={isDrawerOpen}
-                variant={smDown ? "temporary" : "permanent"}
+                variant={mdDown ? "temporary" : "permanent"}
                 sx={{
-                    width: smDown ? 'auto' : theme.spacing(28),
+                    width: mdDown ? 'auto' : theme.spacing(28),
                     flexShrink: 0,
                     '& .MuiDrawer-paper': {
-                        width: smDown ? 'auto' : theme.spacing(28)
+                        width: mdDown ? 'auto' : theme.spacing(28)
                     }
                 }}
+                id="app-drawer"
             >
                 <Box width="100%" height={theme.spacing(12)} display="flex" justifyContent="center">
                     <Avatar
-                        sx={{height: theme.spacing(12), width: theme.spacing(12) }}
-                        src={logo}/>
+                        sx={{ height: theme.spacing(12), width: theme.spacing(12) }}
+                        src={logo} />
                 </Box>
                 <Divider />
                 <List component="nav">
@@ -84,7 +85,7 @@ export const SideNav: React.FC<Props> = ({ children }) => {
                 component="main"
                 sx={{
                     flexGrow: 1,
-                    marginLeft: smDown ? 0 : theme.spacing(28),
+                    marginLeft: mdDown ? 0 : theme.spacing(28),
                     height: '100vh',
                     overflow: 'auto'
                 }}

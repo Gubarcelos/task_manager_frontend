@@ -1,7 +1,8 @@
-import { Drawer, List, ListItemButton, ListItemText, Icon, ListItemIcon, useMediaQuery, Box, useTheme, Avatar, Divider } from "@mui/material";
+import { Avatar, Box, Divider, Drawer, Icon, IconButton, List, ListItemButton, ListItemIcon, ListItemText, useMediaQuery, useTheme } from "@mui/material";
 
-import { useDrawerContext } from "../../contexts";
 import { useMatch, useNavigate, useResolvedPath } from "react-router-dom";
+import { useDrawerContext } from "../../contexts";
+import Cookies from "universal-cookie";
 
 const logo = require('../../../assets/logo-cobasi-512.png');
 
@@ -39,6 +40,14 @@ export const SideNav: React.FC<Props> = ({ children }) => {
     const theme = useTheme();
     const smDown = useMediaQuery(theme.breakpoints.down('sm'));
     const { isDrawerOpen } = useDrawerContext();
+    const cookies = new Cookies();
+
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        cookies.remove('token');
+        navigate('/login');
+    };
 
     return (
         <>
@@ -58,7 +67,7 @@ export const SideNav: React.FC<Props> = ({ children }) => {
                         sx={{height: theme.spacing(12), width: theme.spacing(12) }}
                         src={logo}/>
                 </Box>
-                <Divider>
+                <Divider />
                 <List component="nav">
                     <LinkItemList
                         icon='checklist'
@@ -66,7 +75,10 @@ export const SideNav: React.FC<Props> = ({ children }) => {
                         label='Tasks'
                     />
                 </List>
-                </Divider>
+                <Divider />
+                <IconButton onClick={handleLogout}>
+                    <Icon>logout</Icon>
+                </IconButton>
             </Drawer>
             <Box
                 component="main"

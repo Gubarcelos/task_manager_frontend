@@ -6,7 +6,6 @@ import { TaskService } from "../../shared/services/api/Tasks/TasksServices";
 
 // Styled Components
 import styled from "styled-components";
-import { useDrawerContext } from "../../shared/contexts";
 import Cookies from "universal-cookie";
 
 const FormContainer = styled.form`

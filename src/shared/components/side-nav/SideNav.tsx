@@ -1,7 +1,8 @@
-import { Drawer, List, ListItemButton, ListItemText, Icon, ListItemIcon, useMediaQuery, Box, useTheme, Avatar, Divider } from "@mui/material";
+import { Avatar, Box, Divider, Drawer, Icon, IconButton, List, ListItemButton, ListItemIcon, ListItemText, useMediaQuery, useTheme } from "@mui/material";
 
-import { useDrawerContext } from "../../contexts";
 import { useMatch, useNavigate, useResolvedPath } from "react-router-dom";
+import { useDrawerContext } from "../../contexts";
+import Cookies from "universal-cookie";
 
 const logo = require('../../../assets/logo-cobasi-512.png');
 
@@ -37,28 +38,37 @@ const LinkItemList: React.FC<IListItemLinkProps> = ({ icon, label, to }) => {
 
 export const SideNav: React.FC<Props> = ({ children }) => {
     const theme = useTheme();
-    const smDown = useMediaQuery(theme.breakpoints.down('sm'));
-    const { isDrawerOpen } = useDrawerContext();
+    const mdDown = useMediaQuery(theme.breakpoints.down('md'));
+    const { isDrawerOpen, closeDrawer } = useDrawerContext();
+    const cookies = new Cookies();
+
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        cookies.remove('token');
+        navigate('/login');
+    };
 
     return (
         <>
             <Drawer
                 open={isDrawerOpen}
-                variant={smDown ? "temporary" : "permanent"}
+                variant={mdDown ? "temporary" : "permanent"}
                 sx={{
-                    width: smDown ? 'auto' : theme.spacing(28),
+                    width: mdDown ? 'auto' : theme.spacing(28),
                     flexShrink: 0,
                     '& .MuiDrawer-paper': {
-                        width: smDown ? 'auto' : theme.spacing(28)
+                        width: mdDown ? 'auto' : theme.spacing(28)
                     }
                 }}
+                id="app-drawer"
             >
                 <Box width="100%" height={theme.spacing(12)} display="flex" justifyContent="center">
                     <Avatar
-                        sx={{height: theme.spacing(12), width: theme.spacing(12) }}
-                        src={logo}/>
+                        sx={{ height: theme.spacing(12), width: theme.spacing(12) }}
+                        src={logo} />
                 </Box>
-                <Divider>
+                <Divider />
                 <List component="nav">
                     <LinkItemList
                         icon='checklist'
@@ -66,13 +76,16 @@ export const SideNav: React.FC<Props> = ({ children }) => {
                         label='Tasks'
                     />
                 </List>
-                </Divider>
+                <Divider />
+                <IconButton onClick={handleLogout}>
+                    <Icon>logout</Icon>
+                </IconButton>
             </Drawer>
             <Box
                 component="main"
                 sx={{
                     flexGrow: 1,
-                    marginLeft: smDown ? 0 : theme.spacing(28),
+                    marginLeft: mdDown ? 0 : theme.spacing(28),
                     height: '100vh',
                     overflow: 'auto'
                 }}

@@ -5,7 +5,6 @@ import { FerramentasDetalhe } from "../../shared/components";
 import { TaskService } from "../../shared/services/api/Tasks/TasksServices";
 
 import styled from "styled-components";
-import { useDrawerContext } from "../../shared/contexts";
 import Cookies from "universal-cookie";
 
 const FormContainer = styled.form`

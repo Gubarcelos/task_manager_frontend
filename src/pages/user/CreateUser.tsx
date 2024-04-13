@@ -12,6 +12,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { LogOnService } from '../../shared/services/api/logon/LogOnService';
 import { LoginService } from '../../shared/services/api';
+import { Grid } from '@mui/material';
 
 function Copyright(props: any) {
     return (
@@ -162,6 +163,14 @@ export const SignUp: React.FC = () => {
                         >
                             Sign Up
                         </Button>
+
+                        <Grid container>
+                            <Grid item>
+                                <Link href="/login" variant="body2">
+                                    {"Voltar para pagina de login"}
+                                </Link>
+                            </Grid>
+                        </Grid>
                     </Box>
                 </Box>
                 <Copyright sx={{ mt: 8, mb: 4 }} />

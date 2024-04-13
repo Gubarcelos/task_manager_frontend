@@ -3,8 +3,6 @@ import { Box, Icon, IconButton, Toolbar, Typography, useMediaQuery, useTheme } f
 import { useDrawerContext } from "../contexts";
 import { ReactNode } from "react";
 
-
-
 interface ILayoutBase {
     titulo: string;
     barraDeFerramenta: ReactNode
@@ -15,7 +13,7 @@ export const LayoutBasePage: React.FC<ILayoutBase> = ({ children, titulo, barraD
     const theme = useTheme();
     const smDown = useMediaQuery(theme.breakpoints.down('sm'));
     const mdDown = useMediaQuery(theme.breakpoints.down('md'));
-    
+
 
     const { toggleDrawerOpen } = useDrawerContext();
     return (
@@ -33,8 +31,8 @@ export const LayoutBasePage: React.FC<ILayoutBase> = ({ children, titulo, barraD
                     variant={smDown ? "h5" : mdDown ? "h4" : "h3"}
                     sx={{
                         textTransform: 'uppercase',
-                        fontSize: '3rem', 
-                        color: theme.palette.text.secondary, 
+                        fontSize: '3rem',
+                        color: theme.palette.text.secondary,
                         textAlign: 'center'
                     }}
                 >

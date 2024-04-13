@@ -9,7 +9,7 @@ export const AppRoutes = () => {
             <Route path="/tasks/" element={<ListagemTasks/>}></Route>
             <Route path="/tasks/view/:id" element={<DetalheTasks/>}></Route>
             <Route path="/tasks/new" element={<DetalheTasks/>}></Route>
-            <Route path="*" element={<Navigate to="/login"/>}></Route>
+            <Route path="*" element={<Navigate to="/tasks"/>}></Route>
         </Routes>
     );
 }

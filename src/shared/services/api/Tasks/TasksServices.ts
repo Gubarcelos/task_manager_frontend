@@ -27,8 +27,8 @@ const getUserTasks = async (userId: string, page: number, pageSize: number): Pro
             }
         });
 
-        const totalCount = parseInt(response.headers['X-Page'] || '0', 10);
-        const currentPage = parseInt(response.headers['X-Total-Count'] || '1', 10);
+        const currentPage = parseInt(response.headers['x-page'] || '0', 10);
+        const totalCount = parseInt(response.headers['x-total-count'] || '1', 10);
 
         return {
             tasks: response.data,

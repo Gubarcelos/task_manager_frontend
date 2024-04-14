@@ -5,7 +5,7 @@ import { FerramentasDetalhe } from "../../shared/components";
 import { TaskService } from "../../shared/services/api/Tasks/TasksServices";
 
 import styled from "styled-components";
-import Cookies from "universal-cookie";
+import { useLoginHook } from "../../shared/hooks";
 
 const FormContainer = styled.form`
     display: flex;
@@ -42,12 +42,10 @@ const StyledSelect = styled.select`
 
 export const DetalheTasks: React.FC = () => {
     const { id = 'nova' } = useParams<'id'>();
-
-    const cookies = new Cookies();
+    const userId = useLoginHook();
 
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
-    const userId = searchParams.get('userId');
 
 
     const [nome, setNome] = useState('');
@@ -67,16 +65,7 @@ export const DetalheTasks: React.FC = () => {
     };
 
     useEffect(() => {
-        const token = cookies.get('token');
-        if (!token) {
-            handleNav('/login');
-            return;
-        }
-        const decodedToken = decodeToken(token);
-        if (!decodedToken) {
-            handleNav('/login');
-            return;
-        }
+
         if (id !== 'nova') {
             TaskService.getById(id).then((result) => {
                 if (result instanceof Error) {

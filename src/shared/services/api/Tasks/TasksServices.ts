@@ -20,12 +20,15 @@ export interface ITasks {
 
 const getUserTasks = async (userId: string, page: number, pageSize: number): Promise<ITasks | Error> => {
     try {
+        console.log(userId)
         const response = await api.get(`/tasks/user/${userId}`, {
             params: {
                 page,
                 pageSize
             }
         });
+
+        console.log(response)
 
         const currentPage = parseInt(response.headers['x-page'] || '0', 10);
         const totalCount = parseInt(response.headers['x-total-count'] || '1', 10);

@@ -4,37 +4,26 @@ import { LayoutBasePage } from "../../shared/layout";
 import { useEffect, useState } from "react";
 import { ITask, TaskService } from "../../shared/services/api/Tasks/TasksServices";
 import { Box, Icon, IconButton, Pagination, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import Cookies from "universal-cookie";
+import { useLoginHook } from "../../shared/hooks";
+
 
 export const ListagemTasks: React.FC = () => {
-
+    const userId = useLoginHook();
     const [rows, setRows] = useState<ITask[]>([]);
     const [page, setPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(5);
     const [totalPages, setTotalPages] = useState<number>(0);
+
     const [totalCount, setTotalCount] = useState<number>(0);
-    const [userId, setUserId] = useState<string>('');
     const [completedTasks, setCompletedTasks] = useState<string[]>([]);
     const navigate = useNavigate();
-    const cookies = new Cookies();
 
 
     useEffect(() => {
-        const token = cookies.get('token');
-        if (!token) {
-            redirectToLogin();
-            return;
+        if (userId) {
+            fetchTasks(userId, page, pageSize);
         }
-        const decodedToken = decodeToken(token);
-        console.log(decodedToken || isTokenExpired(decodedToken));
-        if (!decodedToken) {
-            redirectToLogin();
-            return;
-        }
-        const { userId } = decodedToken;
-        setUserId(userId);
-        fetchTasks(userId, page, pageSize);
-    }, [page, pageSize]);
+    }, [userId, page, pageSize]);
 
     const fetchTasks = (userId: string, currentPage: number, size: number) => {
         TaskService.getUserTasks(userId, currentPage, size)
@@ -49,32 +38,12 @@ export const ListagemTasks: React.FC = () => {
                     }));
                     setRows(formattedRows);
                     setTotalCount(result.totalCount);
-                    const totalPages = Math.ceil(totalCount / pageSize);
+                    const totalPages = Math.ceil(result.totalCount / pageSize);
                     console.log(totalPages)
-                    console.log(totalCount)
+                    console.log(result.totalCount)
                     setTotalPages(totalPages);
                 }
             });
-    };
-
-
-    const decodeToken = (token: string) => {
-        try {
-            const decodedPayload = JSON.parse(atob(token.split('.')[1]));
-            return decodedPayload;
-        } catch (error) {
-            console.error('Erro ao decodificar o token:', error);
-            return null;
-        }
-    };
-
-    const isTokenExpired = (decodedToken: { exp: number }) => {
-        const currentTime = Math.floor(Date.now() / 1000);
-        return decodedToken.exp < currentTime;
-    };
-
-    const redirectToLogin = () => {
-        navigate('/login');
     };
 
 
@@ -115,7 +84,6 @@ export const ListagemTasks: React.FC = () => {
             })
     }
     const handleNav = (path: string) => {
-        console.log("oi")
         navigate(path);
     }
     const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -127,7 +95,7 @@ export const ListagemTasks: React.FC = () => {
             barraDeFerramenta={
                 (
                     <BarraFerramentas
-                        buttonClick={() => handleNav(`/tasks/new?userId=${userId}`)}
+                        buttonClick={() => handleNav(`/tasks/new`)}
                     />)}
         >
             <TableContainer>
@@ -179,7 +147,7 @@ export const ListagemTasks: React.FC = () => {
                                     </IconButton>
                                 </TableCell>
                                 <TableCell>
-                                    <IconButton size="small" onClick={() => handleNav(`/tasks/view/${row._id}?userId=${row.user}`)}>
+                                    <IconButton size="small" onClick={() => handleNav(`/tasks/view/${row._id}`)}>
                                         <Icon>edit</Icon>
                                     </IconButton>
                                 </TableCell>
@@ -189,12 +157,14 @@ export const ListagemTasks: React.FC = () => {
                 </Table>
             </TableContainer>
             <Stack spacing={2} justifyContent="center" alignItems="center" marginTop={2}>
-                <Pagination 
-                count={totalPages}
-                onChange={handlePageChange} 
-                variant="outlined"
-                color="primary" />
+                <Pagination
+                    count={totalPages}
+                    onChange={handlePageChange}
+                    variant="outlined"
+                    color="primary" />
             </Stack>
         </LayoutBasePage>
     );
 }
+
+
